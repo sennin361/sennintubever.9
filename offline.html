@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>オフライン | 仙人Tube</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Noto Sans JP", sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      font-size: 1.2em;
+    }
+
+    .logo {
+      font-size: 3em;
+      margin-bottom: 1em;
+    }
+
+    .refresh-btn {
+      margin-top: 2em;
+      padding: 0.8em 1.5em;
+      font-size: 1em;
+      background: #e53935;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">📴 仙人Tube</div>
+  <h1>オフラインです</h1>
+  <p>インターネット接続を確認してください。</p>
+  <button class="refresh-btn" onclick="location.reload()">再読み込み</button>
+</body>
+</html>
