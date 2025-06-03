@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>仙人Tube</title>
+  <style>
+    /* 省略なしCSS（前回と同じ、必要なら再掲します） */
+    /* 内容が長いため省略。必要なら全CSSをもう一度出します。 */
+  </style>
+</head>
+<body>
+  <div id="app-wrapper">
+    <h1>仙人Tube</h1>
+
+    <div class="controls">
+      <input type="text" id="search-input" placeholder="キーワードを入力してください" />
+      <select id="search-type">
+        <option value="video">動画</option>
+        <option value="channel">チャンネル</option>
+        <option value="playlist">プレイリスト</option>
+      </select>
+      <button id="search-btn">検索</button>
+    </div>
+
+    <div id="results"></div>
+
+    <div id="player-container" style="display:none;">
+      <iframe id="player" width="800" height="450" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+      <button onclick="backToList()">一覧に戻る</button>
+    </div>
+
+    <section id="playlist-section" style="display:none;">
+      <h2>再生リスト</h2>
+      <ul id="playlist"></ul>
+    </section>
+  </div>
+
+  <script>
+    // YouTube APIキー（自分のAPIキーに置き換えてください）
+    const API_KEY = 'YOUR_YOUTUBE_API_KEY';
+
+    const searchInput = document.getElementById('search-input');
+    const searchType = document.getElementById('search-type');
+    const searchBtn = document.getElementById('search-btn');
+    const resultsDiv = document.getElementById('results');
+    const playerContainer = document.getElementById('player-container');
+    const playerIframe = document.getElementById('player');
+    const playlistSection = document.getElementById('playlist-section');
+    const playlistUl = document.getElementById('playlist');
+
+    let nextPageToken = '';
+    let currentQuery = '';
+    let currentType = '';
+    let loading = false;
+
+    searchBtn.addEventListener('click', () => {
+      currentQuery = searchInput.value.trim();
+      if (!currentQuery) {
+        alert('キーワードを入力してください');
+        return;
+      }
+      currentType = searchType.value;
+      nextPageToken = '';
+      resultsDiv.innerHTML = '';
+      playlistSection.style.display = 'none';
+      playerContainer.style.display = 'none';
+      loadVideos(currentQuery, currentType);
+    });
+
+    window.addEventListener('scroll', () => {
+      if (loading) return;
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+        if (nextPageToken) {
+          loadVideos(currentQuery, currentType, nextPageToken);
+        }
+      }
+    });
+
+    function loadVideos(query, type, pageToken = '') {
+      loading = true;
+      let url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&part=snippet&maxResults=12&q=${encodeURIComponent(query)}&type=${type}`;
+      if (pageToken) url += `&pageToken=${pageToken}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert('APIエラー: ' + data.error.message);
+            loading = false;
+            return;
+          }
+
+          nextPageToken = data.nextPageToken || '';
+
+          data.items.forEach(item => {
+            const videoId = type === 'video' ? item.id.videoId
+              : type === 'channel' ? item.id.channelId
+              : item.id.playlistId;
+            const title = item.snippet.title;
+            const thumbnail = item.snippet.thumbnails.medium.url;
+            const channelTitle = item.snippet.channelTitle;
+
+            const div = document.createElement('div');
+            div.className = 'video';
+            div.innerHTML = `
+              <img src="${thumbnail}" onclick="playVideo('${videoId}', '${type}')" />
+              <h4>${title}</h4>
+              <p>チャンネル: ${channelTitle}</p>
+            `;
+            resultsDiv.appendChild(div);
+          });
+
+          loading = false;
+        });
+    }
+
+    function playVideo(id, type) {
+      let embedUrl = '';
+      if (type === 'video') {
+        embedUrl = `https://www.youtube.com/embed/${id}?autoplay=1`;
+      } else if (type === 'playlist') {
+        embedUrl = `https://www.youtube.com/embed?listType=playlist&list=${id}&autoplay=1`;
+      } else if (type === 'channel') {
+        embedUrl = `https://www.youtube.com/embed?listType=user_uploads&list=${id}&autoplay=1`;
+      }
+
+      playerIframe.src = embedUrl;
+      playerContainer.style.display = 'block';
+      resultsDiv.innerHTML = '';
+    }
+
+    function backToList() {
+      playerContainer.style.display = 'none';
+      playerIframe.src = '';
+      resultsDiv.innerHTML = '';
+      loadVideos(currentQuery, currentType);
+    }
+  </script>
+</body>
+</html>
