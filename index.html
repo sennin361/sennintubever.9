@@ -1,296 +1,158 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>プログラミング実行アプリ — 完全版</title>
-  <meta name="description" content="ブラウザだけで動くコード実行アプリ（HTML/CSS/JSライブプレビュー・コンソール・スニペット保存）" />
+  <meta charset="UTF-8">
+  <title>ZIPゲームランチャー</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <style>
-    :root{
-      --bg:#0f1720; --panel:#0b1220; --muted:#9aa4b2; --accent:#7dd3fc; --accent-2:#34d399; --card:#0f1726;
-      --glass: rgba(255,255,255,0.03);
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Noto Sans Mono', monospace;
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,var(--bg),#071023);color:#e6eef6}
-    header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);backdrop-filter: blur(6px);border-bottom:1px solid rgba(255,255,255,0.03)}
-    header h1{font-size:16px;margin:0}
-    header .meta{margin-left:auto;display:flex;gap:8px;align-items:center}
-    .container{display:grid;grid-template-columns:1fr 480px;gap:12px;padding:12px;height:calc(100vh - 64px)}
-    .left{display:flex;flex-direction:column;background:var(--card);border-radius:12px;padding:10px;border:1px solid rgba(255,255,255,0.03)}
-    .tabs{display:flex;gap:6px;margin-bottom:8px}
-    .tab{padding:6px 10px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;border:1px solid transparent}
-    .tab.active{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:var(--accent);border-color:rgba(255,255,255,0.03)}
-    .editors{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0}
-    .editor-wrap{display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
-    textarea.code{flex:1;width:100%;resize:none;padding:12px;border-radius:8px;background:var(--panel);border:1px solid rgba(255,255,255,0.02);color:#dff6ff;font-family:var(--mono);font-size:13px;line-height:1.5;min-height:120px;overflow:auto}
-    .controls{display:flex;gap:8px;align-items:center}
-    button.btn{background:linear-gradient(180deg,var(--accent),#4fd1e5);border:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:#042023;font-weight:600}
-    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 10px}
-    .small{padding:6px 8px;font-size:13px}
-    .right{display:flex;flex-direction:column;background:var(--card);border-radius:12px;padding:10px;border:1px solid rgba(255,255,255,0.03);min-height:0}
-    .preview{flex:1;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.02)}
-    .console{height:160px;margin-top:8px;background:#021019;padding:8px;border-radius:8px;overflow:auto;font-family:var(--mono);font-size:13px;border:1px solid rgba(255,255,255,0.02)}
-    .footer{padding:8px 12px;text-align:right;color:var(--muted);font-size:12px}
-    .row{display:flex;gap:8px}
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    label{font-size:12px;color:var(--muted)}
-    .snippet-list{max-height:160px;overflow:auto;padding:6px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:8px}
-    .snippet-item{padding:6px;border-radius:6px;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid rgba(255,255,255,0.02);margin-bottom:6px}
-    .kbd{background:rgba(255,255,255,0.04);padding:4px 6px;border-radius:6px;font-family:var(--mono);font-size:12px}/* responsive */
-@media (max-width:980px){
-  .container{grid-template-columns:1fr;grid-auto-rows:1fr;height:calc(100vh - 112px)}
-  .right{order:2}
-}
 
+    header {
+      background: rgba(0,0,0,0.4);
+      width: 100%;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    main {
+      width: 95%;
+      max-width: 900px;
+      margin-top: 2rem;
+      background: rgba(255,255,255,0.05);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    .upload-label {
+      display: inline-block;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      background: #00c6ff;
+      color: #fff;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 12px rgba(0,198,255,0.4);
+    }
+    .upload-label:hover {
+      background: #0072ff;
+      box-shadow: 0 6px 15px rgba(0,114,255,0.6);
+    }
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-info {
+      margin-top: 1rem;
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    #loader {
+      margin: 1.5rem auto;
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(255,255,255,0.3);
+      border-top-color: #00c6ff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #gameFrame {
+      width: 100%;
+      height: 70vh;
+      margin-top: 2rem;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+      background: #000;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#0b1220" stroke="#34d399"/></svg>
-    <h1>プログラミング実行アプリ — 完全版</h1>
-    <div class="meta">
-      <div class="kbd">Ctrl/Cmd + Enter ▶ 実行</div>
-      <div class="kbd" id="status">Ready</div>
-    </div>
-  </header>  <main class="container">
-    <section class="left">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
-        <div class="tabs">
-          <button class="tab active" data-tab="html">HTML</button>
-          <button class="tab" data-tab="css">CSS</button>
-          <button class="tab" data-tab="js">JS</button>
-        </div>
-        <div class="controls">
-          <button class="btn small" id="run">▶ 実行</button>
-          <button class="ghost small" id="reset">初期化</button>
-          <button class="ghost small" id="export">エクスポート (.html)</button>
-        </div>
-      </div><div class="editors">
-    <div class="editor-wrap" data-editor="html">
-      <label>HTML</label>
-      <textarea id="code-html" class="code" spellcheck="false"><!doctype html>
+  <header>🎮 ZIPゲームランチャー</header>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Live Preview</title>
-  </head>
-  <body>
-    <h1>Hello from HTML</h1>
-    <div id="app"></div>
-  </body>
-</html>
-</textarea>
-        </div><div class="editor-wrap" data-editor="css" style="display:none">
-      <label>CSS</label>
-      <textarea id="code-css" class="code" spellcheck="false">/* CSS をここに */
+  <main>
+    <label for="zipFile" class="upload-label">📂 ZIPファイルを選択</label>
+    <input type="file" id="zipFile" accept=".zip">
+    <div class="file-info" id="fileInfo">まだファイルが選択されていません</div>
 
-body{font-family:Inter, sans-serif;color:#111;background:#fff} h1{color:#0b76ff} </textarea> </div>
+    <div id="loader"></div>
+    <iframe id="gameFrame"></iframe>
+  </main>
 
-<div class="editor-wrap" data-editor="js" style="display:none">
-      <label>JavaScript</label>
-      <textarea id="code-js" class="code" spellcheck="false">// console.log は右下のコンソールに表示されます
-
-console.log('Hello World'); </textarea> </div>
-
-</div>
-
-  <div style="margin-top:8px;display:flex;gap:8px;align-items:flex-start">
-    <div style="flex:1">
-      <label>スニペット</label>
-      <div class="snippet-list" id="snippetList"></div>
-    </div>
-    <div style="width:140px;display:flex;flex-direction:column;gap:6px">
-      <button class="ghost" id="saveSnippet">保存</button>
-      <button class="ghost" id="loadSnippet">読み込み</button>
-      <button class="ghost" id="deleteSnippet">削除</button>
-      <button class="ghost" id="clearStorage">全削除</button>
-    </div>
-  </div>
-</section>
-
-<aside class="right">
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-    <label style="flex:1">ライブプレビュー</label>
-    <div style="display:flex;gap:6px">
-      <button class="ghost small" id="openNew">新しいタブで開く</button>
-      <button class="ghost small" id="downloadHtml">ダウンロード</button>
-    </div>
-  </div>
-
-  <div class="preview" id="previewWrap">
-    <iframe id="preview" style="width:100%;height:100%;border:0;background:white"></iframe>
-  </div>
-
-  <div class="console" id="console"></div>
-  <div class="footer">このアプリは静的 (HTML/CSS/JS) で動きます。Render にデプロイできます。</div>
-</aside>
-
-  </main>  <script>
-    // 要素
-    const tabs = document.querySelectorAll('.tab');
-    const editors = document.querySelectorAll('.editor-wrap');
-    const codeHtml = document.getElementById('code-html');
-    const codeCss = document.getElementById('code-css');
-    const codeJs = document.getElementById('code-js');
-    const runBtn = document.getElementById('run');
-    const preview = document.getElementById('preview');
-    const consoleDiv = document.getElementById('console');
-    const status = document.getElementById('status');
-
-    // スニペット管理
-    const snippetList = document.getElementById('snippetList');
-
-    function switchTab(name){
-      tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
-      editors.forEach(e=>e.style.display = e.dataset.editor===name ? 'flex' : 'none');
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
     }
-    tabs.forEach(t=>t.addEventListener('click', ()=>switchTab(t.dataset.tab)));
 
-    // Run / Preview
-    function buildPreview(){
-      const html = codeHtml.value;
-      const css = '<style>' + codeCss.value + '</style>';// JS はコンソール捕捉のために安全にラップする
-  const js = `\n<script>\n// capture console\n(function(){\n  const realLog = console.log;\n  const realErr = console.error;\n  function send(){\n    const args = Array.from(arguments).map(a=>{try{return JSON.stringify(a)}catch(e){return String(a)}}).join(' ');
-parent.postMessage({type:'console', level:'log', text:args}, '*');\n    realLog.apply(console, arguments);\n  }\n  function sendErr(){\n    const args = Array.from(arguments).map(a=>{try{return JSON.stringify(a)}catch(e){return String(a)}}).join(' ');
-parent.postMessage({type:'console', level:'error', text:args}, '*');\n    realErr.apply(console, arguments);\n  }\n  console.log = send; console.error = sendErr;\n})();\n</script>`;
-  const userJs = '<script>' + codeJs.value + '<' + '/script>';
-  const full = html.replace('</head>', css + '</head>') + js + userJs;
-  return full;
-}
+    const fileInput = document.getElementById("zipFile");
+    const fileInfo = document.getElementById("fileInfo");
+    const loader = document.getElementById("loader");
+    const frame = document.getElementById("gameFrame");
 
-function run(){
-  clearConsole();
-  status.textContent = 'Running...';
-  const doc = preview.contentWindow.document;
-  const content = buildPreview();
-  doc.open();
-  doc.write(content);
-  doc.close();
-  status.textContent = 'Ready';
-}
+    fileInput.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
 
-// console メッセージ受け取り
-window.addEventListener('message', (ev)=>{
-  try{
-    const data = ev.data;
-    if(data && data.type==='console'){
-      const el = document.createElement('div');
-      el.textContent = data.level === 'error' ? 'ERR: ' + data.text : data.text;
-      if(data.level === 'error') el.style.color = '#ff6b6b';
-      consoleDiv.appendChild(el);
-      consoleDiv.scrollTop = consoleDiv.scrollHeight;
-    }
-  }catch(e){/* ignore */}
-});
+      fileInfo.textContent = `選択中: ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+      loader.style.display = "block";
+      frame.src = "";
 
-// コンソール補助
-function clearConsole(){ consoleDiv.innerHTML = '' }
+      const zip = await JSZip.loadAsync(file);
+      const files = {};
 
-// スニペット: localStorage を使用
-function loadSnippets(){
-  snippetList.innerHTML = '';
-  const keys = Object.keys(localStorage).filter(k=>k.startsWith('snippet:'));
-  if(keys.length===0){ snippetList.innerHTML = '<div style="color:var(--muted);font-size:13px">保存されたスニペットはありません</div>'; return }
-  keys.reverse().forEach(k=>{
-    const meta = JSON.parse(localStorage.getItem(k));
-    const item = document.createElement('div'); item.className = 'snippet-item';
-    const left = document.createElement('div'); left.style.flex='1'; left.innerHTML = `<strong style="color:var(--accent)">${meta.title}</strong><div style="font-size:12px;color:var(--muted)">${new Date(meta.ts).toLocaleString()}</div>`;
-    const right = document.createElement('div');
-    const loadBtn = document.createElement('button'); loadBtn.className='ghost'; loadBtn.textContent='Load';
-    loadBtn.addEventListener('click', ()=>{
-      codeHtml.value = meta.html; codeCss.value = meta.css; codeJs.value = meta.js; status.textContent='Loaded: '+meta.title;
+      for (const [filename, entry] of Object.entries(zip.files)) {
+        if (!entry.dir) {
+          files[filename] = await entry.async("blob");
+        }
+      }
+
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: "load-zip",
+          files: Object.fromEntries(
+            Object.entries(files).map(([name, blob]) => [name, URL.createObjectURL(blob)])
+          )
+        });
+      }
+
+      const indexFile = Object.keys(files).find(f => f.toLowerCase().endsWith("index.html"));
+      if (!indexFile) {
+        loader.style.display = "none";
+        alert("ZIP内に index.html が見つかりません！");
+        return;
+      }
+
+      frame.src = "zip:///" + indexFile;
+      frame.onload = () => {
+        loader.style.display = "none";
+      };
     });
-    const delBtn = document.createElement('button'); delBtn.className='ghost'; delBtn.textContent='Del';
-    delBtn.addEventListener('click', ()=>{ localStorage.removeItem(k); loadSnippets(); });
-    right.appendChild(loadBtn); right.appendChild(delBtn);
-    item.appendChild(left); item.appendChild(right);
-    snippetList.appendChild(item);
-  });
-}
-
-document.getElementById('saveSnippet').addEventListener('click', ()=>{
-  const title = prompt('スニペット名を入力してください');
-  if(!title) return;
-  const meta = { title: title, ts: Date.now(), html: codeHtml.value, css: codeCss.value, js: codeJs.value };
-  const id = 'snippet:' + Date.now();
-  localStorage.setItem(id, JSON.stringify(meta));
-  loadSnippets();
-  status.textContent = 'Saved: '+title;
-});
-
-document.getElementById('loadSnippet').addEventListener('click', ()=>{
-  loadSnippets(); status.textContent='Loaded snippet list';
-});
-
-document.getElementById('deleteSnippet').addEventListener('click', ()=>{
-  const key = prompt('削除するスニペットのタイムスタンプを入力してください（例：snippet:163...）\nスニペット一覧で "Del" を押すこともできます');
-  if(key) { localStorage.removeItem(key); loadSnippets(); }
-});
-
-document.getElementById('clearStorage').addEventListener('click', ()=>{ if(confirm('ローカルストレージのスニペットをすべて削除しますか？')){ Object.keys(localStorage).filter(k=>k.startsWith('snippet:')).forEach(k=>localStorage.removeItem(k)); loadSnippets(); } });
-
-// Export as single HTML file
-function exportHtml(){
-  const content = buildPreview();
-  const blob = new Blob([content], {type:'text/html'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'live_preview.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-}
-
-document.getElementById('export').addEventListener('click', exportHtml);
-document.getElementById('downloadHtml').addEventListener('click', exportHtml);
-
-// Reset
-document.getElementById('reset').addEventListener('click', ()=>{
-  if(!confirm('エディタを初期状態に戻しますか？保存していない変更は消えます')) return;
-  localStorage.removeItem('starter_html'); localStorage.removeItem('starter_css'); localStorage.removeItem('starter_js');
-  location.reload();
-});
-
-// Open preview in new tab
-document.getElementById('openNew').addEventListener('click', ()=>{
-  const content = buildPreview();
-  const w = window.open();
-  w.document.open(); w.document.write(content); w.document.close();
-});
-
-// Download combined .html via button
-document.getElementById('downloadHtml').addEventListener('click', exportHtml);
-
-// Keyboard shortcuts
-window.addEventListener('keydown', (e)=>{
-  if((e.ctrlKey||e.metaKey) && e.key === 'Enter'){
-    e.preventDefault(); run();
-  }
-});
-
-// Run button
-runBtn.addEventListener('click', run);
-
-// Persist editor content (auto-save)
-function persist(){
-  localStorage.setItem('starter_html', codeHtml.value);
-  localStorage.setItem('starter_css', codeCss.value);
-  localStorage.setItem('starter_js', codeJs.value);
-}
-[codeHtml, codeCss, codeJs].forEach(el=>el.addEventListener('input', ()=>{ persist(); status.textContent='Edited'; }));
-
-// Load persisted content if any
-window.addEventListener('load', ()=>{
-  const sh = localStorage.getItem('starter_html');
-  const sc = localStorage.getItem('starter_css');
-  const sj = localStorage.getItem('starter_js');
-  if(sh) codeHtml.value = sh; if(sc) codeCss.value = sc; if(sj) codeJs.value = sj;
-  loadSnippets();
-  // initial run
-  run();
-});
-
-// simple safety note: disallow certain dangerous inline patterns from running in the preview (best-effort)
-// (We keep it permissive because user wants execution; for hardened deployments, run in server-side sandboxes.)
+  </script>
+</body>
+</html>// (We keep it permissive because user wants execution; for hardened deployments, run in server-side sandboxes.)
 
   </script>
 </body>
