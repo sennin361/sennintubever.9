@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>プログラミング実行アプリ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: monospace;
+      margin: 0;
+      background: #1e1e2e;
+      color: #f8f8f2;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #282a36;
+      padding: 10px;
+      text-align: center;
+      font-size: 1.2em;
+    }
+    textarea {
+      flex: 1;
+      background: #2e3440;
+      color: #f8f8f2;
+      border: none;
+      outline: none;
+      padding: 10px;
+      font-size: 14px;
+      resize: none;
+    }
+    #console {
+      height: 150px;
+      background: #000;
+      color: #0f0;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 13px;
+      border-top: 2px solid #444;
+    }
+    button {
+      background: #50fa7b;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 5px;
+      border-radius: 6px;
+    }
+    button:hover {
+      background: #40c96d;
+    }
+    footer {
+      text-align: center;
+      background: #282a36;
+      padding: 5px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>🖥 プログラミング実行アプリ（JavaScript対応）</header>
+
+  <textarea id="code">// ここにJavaScriptコードを書いてください\nconsole.log("Hello World!");</textarea>
+  
+  <div style="text-align:center;">
+    <button onclick="runCode()">▶ 実行</button>
+    <button onclick="clearConsole()">🧹 コンソールをクリア</button>
+  </div>
+
+  <div id="console"></div>
+
+  <footer>© 2025 プログラミング実行アプリ</footer>
+
+  <script>
+    const consoleDiv = document.getElementById("console");
+
+    // 実行ボタン
+    function runCode() {
+      const code = document.getElementById("code").value;
+      try {
+        const originalLog = console.log;
+        console.log = function(...args) {
+          args.forEach(arg => {
+            consoleDiv.innerHTML += arg + "<br>";
+          });
+          consoleDiv.scrollTop = consoleDiv.scrollHeight;
+          originalLog.apply(console, args);
+        };
+        new Function(code)();
+      } catch (error) {
+        consoleDiv.innerHTML += `<span style="color:red;">${error}</span><br>`;
+      }
+    }
+
+    // コンソールクリア
+    function clearConsole() {
+      consoleDiv.innerHTML = "";
+    }
+  </script>
+</body>
+</html>
